@@ -4,6 +4,13 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+google-cloud-storage = "*"
+google-cloud-speech = "*"
+ffmpeg-python = "*"
+google-generativeai = "*"
+google-cloud-aiplatform = "*"
+google-cloud-texttospeech = "*"
+googletrans = "==4.0.0rc1"
 
 [dev-packages]
 
