@@ -16,4 +16,3 @@ googletrans = "==4.0.0rc1"
 
 [requires]
 python_version = "3.8"
-python_full_version = "3.8.17"

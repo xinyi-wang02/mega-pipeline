@@ -18,7 +18,7 @@ from tempfile import TemporaryDirectory
 # Generate the inputs arguments parser
 parser = argparse.ArgumentParser(description="Command description.")
 
-gcp_project = "APCOMP215"
+gcp_project = "caramel-brook-434717-p6"
 bucket_name = "mega-pipeline-bucket-215"
 input_audios = "input_audios"
 text_prompts = "text_prompts" # THIS IS THE TRANSCRIBED TEXT
@@ -260,8 +260,21 @@ def synthesis_en_audios():
             result = operation.result(timeout=300)
             print("Audio file will be saved to GCS bucket automatically.")
 
+def download_text_paragraphs_for_trans():
+    print("downloading text paragraphs for translation")
+
+    # Clear
+    shutil.rmtree(text_paragraphs, ignore_errors=True, onerror=None)
+    makedirs()
+
+    storage_client = storage.Client(project=gcp_project)
+    bucket = storage_client.bucket(bucket_name)
+    blobs = bucket.list_blobs(match_glob=f"{text_paragraphs}/input-*.txt")
+    for blob in blobs:
+        blob.download_to_filename(blob.name)
+
 def translate_text_paragraphs_en_fr():
-    print("translate")
+    print("translating text paragraphs from English to French")
     makedirs()
 
     # Get the list of text file
@@ -275,13 +288,19 @@ def translate_text_paragraphs_en_fr():
 
         with open(text_file) as f:
             input_text = f.read()
+        
+        try:
 
-        results = translator.translate(input_text, src="en", dest="fr")
-        print(results.text)
+            print(f"Type of {text_file}: {type(input_text)}")
+            results = translator.translate(input_text, src="en", dest="fr")
+            print(results.text)
+        
+            # Save the translation
+            with open(translated_file, "w") as f:
+                f.write(results.text)
 
-        # Save the translation
-        with open(translated_file, "w") as f:
-            f.write(results.text)
+        except (TypeError, AttributeError) as e:
+            print(f"Error translating {text_file}: {e}")
 
 def upload_text_translate():
     print("uploading translated text from English to French")
@@ -384,6 +403,8 @@ def main(args=None):
         download_text_paragraphs()
     if args.synthesis_en_audios:
         synthesis_en_audios()
+    if args.download_text_paragraphs_for_trans:
+        download_text_paragraphs_for_trans()
     if args.translate_text_paragraphs_en_fr:
         translate_text_paragraphs_en_fr()
     if args.upload_text_translate:
@@ -445,6 +466,12 @@ if __name__ == "__main__":
         "--synthesis_en_audios", 
         action="store_true", 
         help="Synthesis audio"
+    )
+
+    parser.add_argument(
+        "--download_text_paragraphs_for_trans",
+        action="store_true",
+        help="Download paragraph of text from GCS bucket for translation",
     )
 
     parser.add_argument(
