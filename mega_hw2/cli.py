@@ -288,11 +288,13 @@ def translate_text_paragraphs_en_fr():
 
         with open(text_file) as f:
             input_text = f.read()
+        input_text_truc = input_text[:5000] # truncated input text to 5000 characters to prevent googletrans error
         
         try:
 
-            print(f"Type of {text_file}: {type(input_text)}")
-            results = translator.translate(input_text, src="en", dest="fr")
+            print(f"Type of {text_file}: {type(input_text_truc)}")
+            #print(input_text_truc)
+            results = translator.translate(input_text_truc, src="en", dest="fr")
             print(results.text)
         
             # Save the translation
@@ -422,78 +424,78 @@ if __name__ == "__main__":
 
     parser.add_argument(
         "--download_audio",
-        action="store_true",
+        default=True,
         help="Download audio files from GCS bucket",
     )
 
     parser.add_argument(
         "--transcribe_audio", 
-        action="store_true", 
+        default=True, 
         help="Transcribe audio files to text"
     )
 
     parser.add_argument(
         "--upload_transcribed_audio_text",
-        action="store_true",
+        default=True,
         help="Upload transcribed text to GCS bucket",
     )
 
     parser.add_argument(
         "--download_text_prompts",
-        action="store_true",
+        default=True,
         help="Download text prompts from GCS bucket",
     )
 
     parser.add_argument(
         "--generate_text_paragraph", 
-        action="store_true", 
+        default=True, 
         help="Generate a text paragraph"
     )
 
     parser.add_argument(
         "--upload_text_paragraph",
-        action="store_true",
+        default=True,
         help="Upload paragraph text to GCS bucket",
     )
 
     parser.add_argument(
         "--download_text_paragraphs",
-        action="store_true",
+        default=True,
         help="Download paragraph of text from GCS bucket",
     )
 
     parser.add_argument(
         "--synthesis_en_audios", 
-        action="store_true", 
+        default=True, 
         help="Synthesis audio"
     )
 
     parser.add_argument(
         "--download_text_paragraphs_for_trans",
-        action="store_true",
+        default=True,
         help="Download paragraph of text from GCS bucket for translation",
     )
 
     parser.add_argument(
         "--translate_text_paragraphs_en_fr", 
-        action="store_true", 
+        default=True,
         help="Translate text")
 
     parser.add_argument(
         "--upload_text_translate",
-        action="store_true",
+        default=True,
         help="Upload translated text to GCS bucket",
     )
 
     parser.add_argument(
         "--download_text_translate",
-        action="store_true",
+        default=True,
         help="Download translated text from GCS bucket",
     )
 
     parser.add_argument(
         "--synthesis_audio_fr", 
-        action="store_true", 
+        default=True, 
         help="Synthesis audio"
     )
 
